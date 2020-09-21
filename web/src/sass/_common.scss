@@ -1,0 +1,11 @@
+
+$small:    "screen and (max-width:#{$width_sp})";
+$middle:   "screen and (min-width:#{$width_tablet})";
+$large:    "screen and (min-width:#{$width_pc + 20})";
+$retina:   "screen and (min-resolution: 2dppx)";
+$between:  "only screen and (min-width:641px) and (max-width:959px)";
+	
+// ===================================================================
+// body
+// ===================================================================
+

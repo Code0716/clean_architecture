@@ -1,0 +1,21 @@
+FROM golang:1.12-alpine as build
+
+WORKDIR /web
+
+COPY /web /web
+
+RUN apk update && \
+    apk add --no-cache git && \
+    go get github.com/go-sql-driver/mysql
+
+FROM alpine
+
+WORKDIR /web
+
+COPY --from=build /web .
+
+RUN addgroup go \
+    && adduser -D -G go go \
+    && chown -R go:go /web
+
+CMD ["./web"]

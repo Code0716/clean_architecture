@@ -1,0 +1,18 @@
+@charset "utf-8";
+// ===================================================================
+// 基本設定
+// ===================================================================
+
+// ブレイクポイントんの設定
+$width_pc: 1200px;
+$width_tablet: 768px;
+$width_sp: 480px;
+
+// 基本フォント
+$line_hight: 1.6;
+$base_font_size: 18px;
+$font_color: #330000;
+
+$base_font: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ',
+  Meiryo, '游ゴシック体', 'Yu Gothic', YuGothic, 'MS P Gothic',
+  'ＭＳ Ｐゴシック', arial, helvetica, sans-serif;

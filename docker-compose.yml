@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+  go_db:
+    image: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d
+    container_name: golang_db
+    networks:
+      - container-link
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: clean
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test
+      TZ: "Asia/Tokyo"
+
+  golang:
+    build: .
+    volumes:
+      - ./app:/app
+      - ./images:/images
+    working_dir: /app/cmd
+    command: go run main.go
+    container_name: golang_app
+    networks:
+      - container-link
+    depends_on:
+      - go_db
+    ports:
+      - "8000:8000"
+    environment:
+      MYSQL_DB_HOST: go_db
+      MYSQL_DB: clean
+      MYSQL_PORT: 3306
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test
+
+  go_react:
+    image: node:14.5.0-alpine3.11
+    container_name: golang_react
+    networks:
+      - container-link
+    volumes:
+      - ./web:/web
+      - ./images:/web/dist/images
+      - /web/node_modules/
+    working_dir: /web
+    command: sh -c 'yarn && yarn dev'
+    ports:
+      - 8080:8080
+    depends_on:
+      - golang
+
+networks:
+  default:
+    external:
+      name: bridge
+  container-link:
+    name: clean-architecture
+
+volumes:
+  mysql_data:
