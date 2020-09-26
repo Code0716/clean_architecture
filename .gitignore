@@ -1,6 +1,5 @@
 .DS_Store
 /mysql_data
-node_modules/
 images/preupload/*.jpg
 images/preupload/*.png
 images/preupload/*.gif
