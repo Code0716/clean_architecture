@@ -20,9 +20,9 @@ services:
   golang:
     build: .
     volumes:
-      - ./app:/app
+      - ./:/app
       - ./images:/images
-    working_dir: /app/cmd
+    working_dir: /app
     command: go run main.go
     container_name: clean_app
     networks:

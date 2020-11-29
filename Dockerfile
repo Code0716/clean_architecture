@@ -11,4 +11,3 @@ RUN apk update && \
     go get github.com/gin-gonic/gin && \
     go get github.com/gin-contrib/cors
 
-CMD ["go", "run", "main.go"] 
