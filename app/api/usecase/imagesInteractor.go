@@ -1,6 +1,6 @@
 package usecase
 
-import "github.com/Code0716/clean_architecture/tree/master/app/api/domain"
+import "github.com/Code0716/clean_architecture/app/api/domain"
 
 type ImagesInteractor struct {
 	ImagesRepository ImagesRepository
