@@ -1,21 +1,21 @@
 version: '3.8'
 services:
-  go_db:
+  clean_db:
     image: mysql
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql:/docker-entrypoint-initdb.d
-    container_name: golang_db
+    container_name: clean_db
     networks:
       - container-link
     ports:
       - '3306:3306'
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: clean
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: test
-      TZ: 'Asia/Tokyo'
+      MYSQL_DATABASE: $DATABASE_MYSQL_DBNAME
+      MYSQL_USER: $DATABASE_MYSQL_USER
+      MYSQL_PASSWORD: $DATABASE_MYSQL_PASSWORD
+      TZ: $DATABASE_MYSQL_TIMEZONE
 
   golang:
     build: .
@@ -24,19 +24,19 @@ services:
       - ./images:/images
     working_dir: /app/cmd
     command: go run main.go
-    container_name: golang_app
+    container_name: clean_app
     networks:
       - container-link
     depends_on:
-      - go_db
+      - clean_db
     ports:
       - '8000:8000'
     environment:
-      MYSQL_DB_HOST: go_db
-      MYSQL_DB: clean
-      MYSQL_PORT: 3306
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: test
+      MYSQL_DB_HOST: clean_db
+      MYSQL_DB: $DATABASE_MYSQL_DBNAME
+      MYSQL_PORT: $DATABASE_MYSQL_PORT
+      MYSQL_USER: $DATABASE_MYSQL_USER
+      MYSQL_PASSWORD: $DATABASE_MYSQL_PASSWORD
 
 networks:
   default:
