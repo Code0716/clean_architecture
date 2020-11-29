@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"../../usecase"
-	"../database"
+	"github.com/Code0716/clean_architecture/tree/master/app/api/database"
+	"github.com/Code0716/clean_architecture/tree/master/app/api/usecase"
 )
 
 // images

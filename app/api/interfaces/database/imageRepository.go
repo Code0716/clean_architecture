@@ -1,7 +1,7 @@
 package database
 
 import (
-	"../../domain"
+	"github.com/Code0716/clean_architecture/tree/master/app/api/domain"
 	"time"
 )
 

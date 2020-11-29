@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"../interfaces/controllers"
+	"github.com/Code0716/clean_architecture/tree/master/app/api/interfaces/controllers"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

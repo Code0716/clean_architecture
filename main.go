@@ -1,7 +1,7 @@
 package main
 
 import (
-	"../api/infrastructure"
+	"github.com/Code0716/clean_architecture/tree/master/app/api/api/infrastructure"
 )
 
 func main() {
