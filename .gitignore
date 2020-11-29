@@ -8,3 +8,4 @@ images/upload/*.jpg
 images/upload/*.png
 images/upload/*.gif
 images/upload/*.ico
+/.env
