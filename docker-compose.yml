@@ -33,10 +33,17 @@ services:
       - '8000:8000'
     environment:
       MYSQL_DB_HOST: clean_db
+<<<<<<< HEAD
       MYSQL_DB: $DATABASE_MYSQL_DBNAME
       MYSQL_PORT: $DATABASE_MYSQL_PORT
       MYSQL_USER: $DATABASE_MYSQL_USER
       MYSQL_PASSWORD: $DATABASE_MYSQL_PASSWORD
+=======
+      MYSQL_DB: clean
+      MYSQL_PORT: 3306
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: test
+>>>>>>> eed1e41f209a606494acb09875e06d14dbe49ba8
 
 networks:
   default:
