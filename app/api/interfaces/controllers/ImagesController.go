@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/Code0716/clean_architecture/app/api/database"
+	"github.com/Code0716/clean_architecture/app/api/interfaces/database"
 	"github.com/Code0716/clean_architecture/app/api/usecase"
 )
 
