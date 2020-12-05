@@ -16,7 +16,7 @@ type SqlHandler struct {
 // ConnectMySQL func
 func ConnectMySQL() *SqlHandler {
 	// sql.Open("mysql", "user:password@tcp(container-name:port)/dbname")
-	conn, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	conn, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		os.Getenv("MYSQL_USER"),
 		os.Getenv("MYSQL_PASSWORD"),
 		"clean_db",

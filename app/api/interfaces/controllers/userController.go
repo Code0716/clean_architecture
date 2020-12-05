@@ -32,7 +32,7 @@ func (controller *UserController) Create(c Context, uuid string, time time.Time)
 		c.JSON(500, err)
 		return
 	}
-	c.JSON(201, err)
+	c.JSON(200, err)
 }
 
 func (controller *UserController) Index(c Context) {

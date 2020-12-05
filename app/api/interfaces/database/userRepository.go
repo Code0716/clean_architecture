@@ -1,6 +1,10 @@
 package database
 
-import "github.com/Code0716/clean_architecture/app/api/domain"
+import (
+	"fmt"
+
+	"github.com/Code0716/clean_architecture/app/api/domain"
+)
 
 type UserRepository struct {
 	SqlHandler
@@ -39,11 +43,12 @@ func (repo *UserRepository) FindAll() (users domain.UserInfo, err error) {
 	if err != nil {
 		return
 	}
+
 	for rows.Next() {
 		user := new(domain.User)
 
-		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate, &user.DeletedDate); err != nil {
-			continue
+		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate, user.DeletedDate); err != nil {
+			fmt.Println(err)
 		}
 		users = append(users, *user)
 	}
