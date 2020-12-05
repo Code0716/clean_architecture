@@ -1,6 +1,9 @@
 package infrastructure
 
 import (
+	"fmt"
+	"os"
+
 	"database/sql"
 	"github.com/Code0716/clean_architecture/app/api/interfaces/database"
 	_ "github.com/go-sql-driver/mysql"
@@ -13,7 +16,12 @@ type SqlHandler struct {
 // ConnectMySQL func
 func ConnectMySQL() *SqlHandler {
 	// sql.Open("mysql", "user:password@tcp(container-name:port)/dbname")
-	conn, err := sql.Open("mysql", "dbuser:dbpassword@tcp(go_db:3306)/world")
+	conn, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		os.Getenv("MYSQL_USER"),
+		os.Getenv("MYSQL_PASSWORD"),
+		"clean_db",
+		os.Getenv("MYSQL_PORT"),
+		"clean"))
 	if err != nil {
 		panic(err.Error)
 	}
