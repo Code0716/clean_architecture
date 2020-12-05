@@ -29,18 +29,19 @@ func (controller *UserController) Create(c Context, uuid string, time time.Time)
 	u.CreatedDate = time
 	err := controller.Interactor.Add(*u)
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(500, err.Error())
 		return
 	}
-	c.JSON(200, err)
+	c.JSON(200, u)
 }
 
 func (controller *UserController) Index(c Context) {
 	users, err := controller.Interactor.Users()
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(500, err.Error())
 		return
 	}
+
 	c.JSON(200, users)
 }
 
@@ -48,7 +49,7 @@ func (controller *UserController) Show(c Context) {
 	id := c.Param("id")
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(500, err.Error())
 		return
 	}
 	c.JSON(200, user)
