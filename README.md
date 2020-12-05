@@ -1,5 +1,7 @@
 # clean_architecture
-Clean Architectureで色々やってみる。
+Clean Architecture API SERVERを作る。 
+javascriptの授業用のapi。
+
 
 ```
 setup
