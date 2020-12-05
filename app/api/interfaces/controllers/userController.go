@@ -27,7 +27,7 @@ func (controller *UserController) Create(c Context, uuid string, createTime time
 	c.Bind(&u)
 	u.ID = uuid
 	u.CreatedDate = createTime
-	// 暫定的措置
+	// 暫定的措置 nullを許容しない。
 	u.DeletedDate = createTime
 	err := controller.Interactor.Add(*u)
 	if err != nil {

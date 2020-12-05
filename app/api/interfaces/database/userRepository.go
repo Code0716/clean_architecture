@@ -12,7 +12,13 @@ type UserRepository struct {
 
 func (repo *UserRepository) Store(u domain.User) (id string, err error) {
 	_, err = repo.Execute(
-		"INSERT INTO users (ID,Name,Email,Password,CreatedDate,DeletedDate) VALUES (?,?,?,?,?,?)", u.ID, u.Name, u.Email, u.Password, u.CreatedDate, u.DeletedDate)
+		"INSERT INTO users (ID,Name,Email,Password,CreatedDate,DeletedDate) VALUES (?,?,?,?,?,?)",
+		u.ID,
+		u.Name,
+		u.Email,
+		u.Password,
+		u.CreatedDate,
+		u.DeletedDate)
 
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +38,12 @@ func (repo *UserRepository) FindById(identifier string) (user domain.User, err e
 		return
 	}
 	row.Next()
-	if err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate, &user.DeletedDate); err != nil {
+	if err = row.Scan(&user.ID,
+		&user.Name,
+		&user.Email,
+		&user.Password,
+		&user.CreatedDate,
+		&user.DeletedDate); err != nil {
 		log.Fatal(err)
 		return
 	}
@@ -50,7 +61,13 @@ func (repo *UserRepository) FindAll() (users domain.UserInfo, err error) {
 	for rows.Next() {
 		user := new(domain.User)
 
-		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate, &user.DeletedDate); err != nil {
+		if err := rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Email,
+			&user.Password,
+			&user.CreatedDate,
+			&user.DeletedDate); err != nil {
 			log.Fatal(err)
 		}
 		users = append(users, *user)

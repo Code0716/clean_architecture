@@ -24,7 +24,6 @@ func Router() {
 		userController := controllers.NewUserController(ConnectMySQL())
 		api.GET("/users", func(c *gin.Context) { userController.Index(c) })
 		api.GET("/users/:id", func(c *gin.Context) { userController.Show(c) })
-		GetUuid()
 		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now()) })
 
 		preImagesController := controllers.NewPreImagesController(ConnectMySQL())
