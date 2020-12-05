@@ -1,7 +1,7 @@
 package database
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/Code0716/clean_architecture/app/api/domain"
 )
@@ -12,9 +12,10 @@ type UserRepository struct {
 
 func (repo *UserRepository) Store(u domain.User) (id string, err error) {
 	_, err = repo.Execute(
-		"INSERT INTO users (ID,Name,Email,Password,CreatedDate,DeletedDate) VALUES (?,?,?,?,?,?)", u.ID, u.Name, u.Email, u.Password, u.CreatedDate, nil)
+		"INSERT INTO users (ID,Name,Email,Password,CreatedDate,DeletedDate) VALUES (?,?,?,?,?,?)", u.ID, u.Name, u.Email, u.Password, u.CreatedDate, u.DeletedDate)
 
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 
@@ -27,10 +28,12 @@ func (repo *UserRepository) FindById(identifier string) (user domain.User, err e
 	row, err := repo.Query("SELECT * FROM users WHERE ID = ?", identifier)
 	defer row.Close()
 	if err != nil {
+		log.Fatal(err)
 		return
 	}
 	row.Next()
-	if err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate); err != nil {
+	if err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate, &user.DeletedDate); err != nil {
+		log.Fatal(err)
 		return
 	}
 
@@ -47,8 +50,8 @@ func (repo *UserRepository) FindAll() (users domain.UserInfo, err error) {
 	for rows.Next() {
 		user := new(domain.User)
 
-		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate, user.DeletedDate); err != nil {
-			fmt.Println(err)
+		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedDate, &user.DeletedDate); err != nil {
+			log.Fatal(err)
 		}
 		users = append(users, *user)
 	}

@@ -5,12 +5,12 @@ USE `clean`;
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
-    `ID` char(36) unsigned NOT NULL,
+    `ID` char(36) NOT NULL,
     `Name` VARCHAR(255) NOT NULL DEFAULT '',
     `Email` VARCHAR(255) NOT NULL,
     `Password` VARCHAR(20) NOT NULL,
     `CreatedDate` datetime NOT NULL,
-    `DeletedDate` datetime,
+    `DeletedDate` datetime NOT NULL,
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

@@ -22,11 +22,13 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	}
 }
 
-func (controller *UserController) Create(c Context, uuid string, time time.Time) {
+func (controller *UserController) Create(c Context, uuid string, createTime time.Time) {
 	u := new(domain.User)
 	c.Bind(&u)
 	u.ID = uuid
-	u.CreatedDate = time
+	u.CreatedDate = createTime
+	// 暫定的措置
+	u.DeletedDate = createTime
 	err := controller.Interactor.Add(*u)
 	if err != nil {
 		c.JSON(500, err.Error())
