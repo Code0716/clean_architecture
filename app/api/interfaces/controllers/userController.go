@@ -52,8 +52,17 @@ func (controller *UserController) Index(c Context) {
 		c.JSON(500, err.Error())
 		return
 	}
-	response := make(map[string]domain.UserInfo, len(users))
-	response["data"] = users
+	var userData []domain.UserResponse
+	for _, value := range users {
+		user := new(domain.UserResponse)
+		user.ID = value.ID
+		user.Name = value.Name
+		user.Email = value.Email
+		userData = append(userData, *user)
+	}
+	response := make(map[string][]domain.UserResponse)
+
+	response["data"] = userData
 	c.JSON(200, response)
 }
 
@@ -64,8 +73,14 @@ func (controller *UserController) Show(c Context) {
 		c.JSON(500, err.Error())
 		return
 	}
-	response := make(map[string]domain.User)
-	response["data"] = user
+	userResponse := new(domain.UserResponse)
+	userResponse.ID = user.ID
+
+	userResponse.Name = user.Name
+	userResponse.Email = user.Email
+
+	response := make(map[string]domain.UserResponse)
+	response["data"] = *userResponse
 	c.JSON(200, response)
 }
 
