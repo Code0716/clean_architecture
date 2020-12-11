@@ -12,13 +12,13 @@ type UserRepository struct {
 
 func (repo *UserRepository) Store(u domain.User) (id string, err error) {
 	_, err = repo.Execute(
-		"INSERT INTO users (ID,Name,Email,Password,CreatedDate,DeletedDate) VALUES (?,?,?,?,?,?)",
+		"INSERT INTO users (ID,Name,Email,Password,CreatedDate) VALUES (?,?,?,?,?)",
 		u.ID,
 		u.Name,
 		u.Email,
 		u.Password,
 		u.CreatedDate,
-		u.DeletedDate)
+	)
 
 	if err != nil {
 		log.Fatal(err)

@@ -19,9 +19,9 @@ func ConnectMySQL() *SqlHandler {
 	conn, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		os.Getenv("MYSQL_USER"),
 		os.Getenv("MYSQL_PASSWORD"),
-		"clean_db",
+		os.Getenv("MYSQL_DB_HOST"),
 		os.Getenv("MYSQL_PORT"),
-		"clean"))
+		os.Getenv("MYSQL_DB")))
 	if err != nil {
 		panic(err.Error)
 	}

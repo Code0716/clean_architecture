@@ -24,8 +24,7 @@ func Router() {
 		userController := controllers.NewUserController(ConnectMySQL())
 		api.GET("/users", func(c *gin.Context) { userController.Index(c) })
 		api.GET("/users/:id", func(c *gin.Context) { userController.Show(c) })
-		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now()) })
-
+		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now(), passwordHash, getNewToken) })
 		preImagesController := controllers.NewPreImagesController(ConnectMySQL())
 		api.GET("/image/pre_upload", func(c *gin.Context) { preImagesController.GetAll(c) }) // Preuploadされた一覧を取得
 		imagesController := controllers.NewImagesController(ConnectMySQL())

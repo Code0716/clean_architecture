@@ -8,9 +8,9 @@ CREATE TABLE `users` (
     `ID` char(36) NOT NULL,
     `Name` VARCHAR(255) NOT NULL DEFAULT '',
     `Email` VARCHAR(255) NOT NULL,
-    `Password` VARCHAR(20) NOT NULL,
+    `Password` VARCHAR(255) NOT NULL,
     `CreatedDate` datetime NOT NULL,
-    `DeletedDate` datetime NOT NULL,
+    `DeletedDate` datetime DEFAULT NULL,
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
