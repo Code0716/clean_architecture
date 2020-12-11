@@ -22,7 +22,13 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	}
 }
 
-func (controller *UserController) Create(c Context, uuid string, createTime time.Time, hashFunc func(string) (string, error), getNewToken func(string, string, string) string) {
+func (controller *UserController) Create(
+	c Context,
+	uuid string,
+	createTime time.Time,
+	hashFunc func(string) (string, error),
+	getNewToken func(string, string, string) string) {
+
 	u := new(domain.User)
 	c.Bind(&u)
 	u.ID = uuid
@@ -61,4 +67,13 @@ func (controller *UserController) Show(c Context) {
 	response := make(map[string]domain.User)
 	response["data"] = user
 	c.JSON(200, response)
+}
+
+func (controller *UserController) Login(
+	c Context,
+	passwordVerify func(hash, pw string) error,
+	getNewToken func(string, string, string) string) {
+
+	// do login
+
 }

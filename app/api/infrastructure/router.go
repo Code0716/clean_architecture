@@ -23,15 +23,13 @@ func Router() {
 	// api group
 	api := router.Group("/api/v1")
 	{
+		api.POST("/users/:id", func(c *gin.Context) { userController.Login(c,passwordVerify), })
+		api.GET("/users", func(c *gin.Context) { validateJWT(c, userController.Index) })
+		api.GET("/users/:id", func(c *gin.Context) { validateJWT(c, userController.Show) })
 		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now(), passwordHash, getNewToken) })
-		admin := api.Group("/admin")
-		{
-			admin.GET("/users", func(c *gin.Context) { validateJWT(c, userController.Index) })
-			admin.GET("/users/:id", func(c *gin.Context) { validateJWT(c, userController.Show) })
-			admin.GET("/image/pre_upload", func(c *gin.Context) { validateJWT(c, preImagesController.GetAll) }) // Preuploadされた一覧を取得
-			admin.GET("/image/upload", func(c *gin.Context) { validateJWT(c, imagesController.GetAll) })        // uploadされた一覧を取得
+		api.GET("/image/pre_upload", func(c *gin.Context) { validateJWT(c, preImagesController.GetAll) }) // Preuploadされた一覧を取得
+		api.GET("/image/upload", func(c *gin.Context) { validateJWT(c, imagesController.GetAll) })        // uploadされた一覧を取得
 
-		}
 	}
 
 	//router.GET("/migrate", migrate.Migrate)
