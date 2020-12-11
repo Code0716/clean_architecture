@@ -5,8 +5,10 @@ import (
 	"os"
 	"time"
 
-	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	"github.com/Code0716/clean_architecture/app/api/interfaces/controllers"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go/request"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -37,13 +39,18 @@ func getNewToken(id, name, email string) (tokenString string) {
 	return
 }
 
-// JwtMiddleware check token
-var JwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
-	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("SIGNINGKEY")), nil
-	},
-	SigningMethod: jwt.SigningMethodHS256,
-})
+func validateJWT(c *gin.Context, executionFunc func(controllers.Context)) {
+	//  署名の検証
+	_, err := request.ParseFromRequest(c.Request, request.OAuth2Extractor, func(token *jwt.Token) (interface{}, error) {
+		b := []byte(os.Getenv("SIGNINGKEY"))
+		return b, nil
+	})
+	if err != nil {
+		c.JSON(401, gin.H{"error": "Unauthorized."})
+		return
+	}
+	executionFunc(c)
+}
 
 // passwordHash make hash
 func passwordHash(pw string) (string, error) {

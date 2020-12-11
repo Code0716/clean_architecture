@@ -36,7 +36,7 @@ func (controller *UserController) Create(c Context, uuid string, createTime time
 	}
 	tokenString := getNewToken(u.ID, u.Name, u.Email)
 	response := make(map[string]string)
-	response["authorization"] = tokenString
+	response["Authorization"] = tokenString
 	c.JSON(200, response)
 }
 
@@ -58,5 +58,7 @@ func (controller *UserController) Show(c Context) {
 		c.JSON(500, err.Error())
 		return
 	}
-	c.JSON(200, user)
+	response := make(map[string]domain.User)
+	response["data"] = user
+	c.JSON(200, response)
 }
