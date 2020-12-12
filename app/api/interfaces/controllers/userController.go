@@ -11,6 +11,7 @@ import (
 
 type UserController struct {
 	Interactor usecase.UserInteractor
+	Base
 }
 
 func NewUserController(sqlHandler database.SqlHandler) *UserController {
@@ -24,14 +25,13 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 }
 
 func (controller *UserController) Create(c Context, uuid string, createTime time.Time, hashFunc func(string) (string, error), getNewToken func(string, string, string) string) {
-
 	u := new(domain.User)
 	c.Bind(&u)
-	response := AuthResponse{}
-	response.Status = http.StatusInternalServerError
+
 	_, err := controller.Interactor.UserByQuery("Email", u.Email)
 	if err == nil {
-		response.ErrorMessage = "User already exist"
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = "User already exist"
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
@@ -42,27 +42,28 @@ func (controller *UserController) Create(c Context, uuid string, createTime time
 	u.CreatedDate = createTime
 	err = controller.Interactor.Add(*u)
 	if err != nil {
-		response.ErrorMessage = "Fatal error"
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = "Fatal error"
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 
 	tokenString := getNewToken(u.ID, u.Name, u.Email)
-	response.Authorization = tokenString
-	response.ErrorMessage = ""
-	response.Status = http.StatusOK
+	response := controller.Base.FormatAuthResponse(http.StatusOK, tokenString)
 	c.JSON(http.StatusOK, response)
 }
 
 func (controller *UserController) Index(c Context) {
-	response := Response{}
-	response.Status = http.StatusInternalServerError
+
 	users, err := controller.Interactor.Users()
 
 	if err != nil {
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = "Unkown error"
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
+
 	var userData []domain.UserResponse
 	for _, value := range users {
 		user := new(domain.UserResponse)
@@ -71,18 +72,18 @@ func (controller *UserController) Index(c Context) {
 		user.Email = value.Email
 		userData = append(userData, *user)
 	}
+	response := controller.Base.FormatResponse(http.StatusOK, userData)
 
-	response.Data = &userData
-	response.Status = http.StatusOK
 	c.JSON(http.StatusOK, response)
 }
 
 func (controller *UserController) Show(c Context) {
-	response := Response{}
-	response.Status = http.StatusInternalServerError
+
 	id := c.Param("id")
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = "Unkown error"
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
@@ -91,34 +92,32 @@ func (controller *UserController) Show(c Context) {
 
 	userResponse.Name = user.Name
 	userResponse.Email = user.Email
-
-	response.Data = &userResponse
-	response.Status = http.StatusOK
+	response := controller.Base.FormatResponse(http.StatusOK, userResponse)
 	c.JSON(http.StatusOK, response)
 }
 
 func (controller *UserController) Login(c Context, passwordVerify func(hash, pw string) error, getNewToken func(string, string, string) string) {
-	response := AuthResponse{}
-	response.Status = http.StatusInternalServerError
 
 	u := new(domain.User)
 	c.Bind(&u)
 
 	// 定数化する？
 	user, err := controller.Interactor.UserByQuery("Email", u.Email)
-	response.ErrorMessage = "Not match email or password"
+	errorMessage := "Not match email or password"
 	if err != nil {
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = errorMessage
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 	err = passwordVerify(user.Password, u.Password)
 	if err != nil {
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = errorMessage
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 	tokenString := getNewToken(user.ID, user.Name, user.Email)
-	response.Authorization = tokenString
-	response.ErrorMessage = ""
-	response.Status = http.StatusOK
+	response := controller.Base.FormatAuthResponse(http.StatusOK, tokenString)
 	c.JSON(http.StatusOK, response)
 }
