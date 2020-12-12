@@ -83,7 +83,7 @@ func (controller *UserController) Show(c Context) {
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
 		response := controller.Base.FormatResponse(http.StatusInternalServerError)
-		response.Meta.ErrorMessage = "Unkown error"
+		response.Meta.ErrorMessage = "User not found"
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
@@ -119,5 +119,26 @@ func (controller *UserController) Login(c Context, passwordVerify func(hash, pw 
 	}
 	tokenString := getNewToken(user.ID, user.Name, user.Email)
 	response := controller.Base.FormatAuthResponse(http.StatusOK, tokenString)
+	c.JSON(http.StatusOK, response)
+}
+
+func (controller *UserController) LogicalDelete(c Context, DeleteTime time.Time) {
+	id := c.Param("id")
+	user, err := controller.Interactor.UserById(id)
+	if err != nil {
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = "User not exist"
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+	user.DeletedDate = &DeleteTime
+	err = controller.Interactor.Delete(user)
+	if err != nil {
+		response := controller.Base.FormatResponse(http.StatusInternalServerError)
+		response.Meta.ErrorMessage = "Unkown error"
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+	response := controller.Base.FormatResponse(http.StatusOK, user)
 	c.JSON(http.StatusOK, response)
 }

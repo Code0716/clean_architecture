@@ -7,4 +7,5 @@ type UserRepository interface {
 	FindById(string) (domain.User, error)
 	FindByQuery(string, string) (domain.User, error)
 	FindAll() (domain.UserInfo, error)
+	Delete(domain.User) error
 }

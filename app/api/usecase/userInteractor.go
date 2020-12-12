@@ -24,3 +24,8 @@ func (interactor *UserInteractor) UserByQuery(Query, param string) (user domain.
 	user, err = interactor.UserRepository.FindByQuery(Query, param)
 	return
 }
+
+func (interactor *UserInteractor) Delete(user domain.User) (err error) {
+	err = interactor.UserRepository.Delete(user)
+	return
+}

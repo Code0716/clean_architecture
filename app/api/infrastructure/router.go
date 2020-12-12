@@ -29,6 +29,9 @@ func Router() {
 		api.GET("/users", func(c *gin.Context) { validateJWT(c, userController.Index) })
 		api.GET("/users/:id", func(c *gin.Context) { validateJWT(c, userController.Show) })
 		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now(), passwordHash, getNewToken) })
+		api.DELETE("/users/:id", func(c *gin.Context) { userController.LogicalDelete(c, time.Now()) })
+
+		// 画像
 		api.GET("/image/pre_upload", func(c *gin.Context) { validateJWT(c, preImagesController.GetAll) }) // Preuploadされた一覧を取得
 		api.GET("/image/upload", func(c *gin.Context) { validateJWT(c, imagesController.GetAll) })        // uploadされた一覧を取得
 

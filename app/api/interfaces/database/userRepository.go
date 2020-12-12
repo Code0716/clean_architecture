@@ -22,7 +22,6 @@ func (repo *UserRepository) Store(u domain.User) (id string, err error) {
 	)
 
 	if err != nil {
-		log.Fatal(err)
 		return
 	}
 
@@ -32,10 +31,10 @@ func (repo *UserRepository) Store(u domain.User) (id string, err error) {
 }
 
 func (repo *UserRepository) FindById(identifier string) (user domain.User, err error) {
-	row, err := repo.Query("SELECT * FROM users WHERE ID = ?", identifier)
+	row, err := repo.Query("SELECT * FROM users WHERE ID = ? AND DeletedDate IS NULL", identifier)
 	defer row.Close()
 	if err != nil {
-		log.Fatal(err)
+
 		return
 	}
 	row.Next()
@@ -45,14 +44,14 @@ func (repo *UserRepository) FindById(identifier string) (user domain.User, err e
 		&user.Password,
 		&user.CreatedDate,
 		&user.DeletedDate); err != nil {
-		log.Fatal(err)
+
 		return
 	}
 
 	return
 }
 func (repo *UserRepository) FindByQuery(setQuery, param string) (user domain.User, err error) {
-	statement := fmt.Sprintf("SELECT * FROM users WHERE %s = ?", setQuery)
+	statement := fmt.Sprintf("SELECT * FROM users WHERE %s = ? AND DeletedDate IS NULL", setQuery)
 
 	row, err := repo.Query(statement, param)
 	defer row.Close()
@@ -75,7 +74,7 @@ func (repo *UserRepository) FindByQuery(setQuery, param string) (user domain.Use
 }
 
 func (repo *UserRepository) FindAll() (users domain.UserInfo, err error) {
-	rows, err := repo.Query("SELECT * FROM users")
+	rows, err := repo.Query("SELECT * FROM users WHERE DeletedDate IS NULL")
 	defer rows.Close()
 	if err != nil {
 		return
@@ -95,5 +94,14 @@ func (repo *UserRepository) FindAll() (users domain.UserInfo, err error) {
 		}
 		users = append(users, *user)
 	}
+	return
+}
+
+func (repo *UserRepository) Delete(u domain.User) (err error) {
+	_, err = repo.Execute(
+		"UPDATE users SET  DeletedDate = ? WHERE id=?",
+		u.DeletedDate, u.ID,
+	)
+
 	return
 }
