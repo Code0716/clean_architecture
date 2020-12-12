@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Code0716/clean_architecture/app/api/domain"
@@ -45,6 +46,28 @@ func (repo *UserRepository) FindById(identifier string) (user domain.User, err e
 		&user.CreatedDate,
 		&user.DeletedDate); err != nil {
 		log.Fatal(err)
+		return
+	}
+
+	return
+}
+func (repo *UserRepository) FindByQuery(setQuery, param string) (user domain.User, err error) {
+	statement := fmt.Sprintf("SELECT * FROM users WHERE %s = ?", setQuery)
+
+	row, err := repo.Query(statement, param)
+	defer row.Close()
+	if err != nil {
+		return
+	}
+	row.Next()
+	err = row.Scan(
+		&user.ID,
+		&user.Name,
+		&user.Email,
+		&user.Password,
+		&user.CreatedDate,
+		&user.DeletedDate)
+	if err != nil {
 		return
 	}
 

@@ -22,12 +22,7 @@ func NewUserController(sqlHandler database.SqlHandler) *UserController {
 	}
 }
 
-func (controller *UserController) Create(
-	c Context,
-	uuid string,
-	createTime time.Time,
-	hashFunc func(string) (string, error),
-	getNewToken func(string, string, string) string) {
+func (controller *UserController) Create(c Context, uuid string, createTime time.Time, hashFunc func(string) (string, error), getNewToken func(string, string, string) string) {
 
 	u := new(domain.User)
 	c.Bind(&u)
@@ -84,11 +79,26 @@ func (controller *UserController) Show(c Context) {
 	c.JSON(200, response)
 }
 
-func (controller *UserController) Login(
-	c Context,
-	passwordVerify func(hash, pw string) error,
-	getNewToken func(string, string, string) string) {
+func (controller *UserController) Login(c Context, passwordVerify func(hash, pw string) error, getNewToken func(string, string, string) string) {
 
-	// do login
+	u := new(domain.User)
+	c.Bind(&u)
+	response := make(map[string]string)
 
+	// 定数化する？
+	user, err := controller.Interactor.UserByQuery("Email", u.Email)
+	response["error"] = "Not match email or password"
+	if err != nil {
+		c.JSON(500, response)
+		return
+	}
+	err = passwordVerify(user.Password, u.Password)
+	if err != nil {
+		c.JSON(500, response)
+		return
+	}
+	tokenString := getNewToken(user.ID, user.Name, user.Email)
+	response["Authorization"] = tokenString
+	response["error"] = ""
+	c.JSON(200, response)
 }

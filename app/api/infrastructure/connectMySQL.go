@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"database/sql"
@@ -23,7 +24,7 @@ func ConnectMySQL() *SqlHandler {
 		os.Getenv("MYSQL_PORT"),
 		os.Getenv("MYSQL_DB")))
 	if err != nil {
-		panic(err.Error)
+		log.Fatal(err)
 	}
 
 	sqlHandler := new(SqlHandler)

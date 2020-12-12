@@ -23,7 +23,9 @@ func Router() {
 	// api group
 	api := router.Group("/api/v1")
 	{
-		api.POST("/users/:id", func(c *gin.Context) { userController.Login(c, passwordVerify, getNewToken) })
+		// login
+		api.POST("/login", func(c *gin.Context) { userController.Login(c, passwordVerify, getNewToken) })
+
 		api.GET("/users", func(c *gin.Context) { validateJWT(c, userController.Index) })
 		api.GET("/users/:id", func(c *gin.Context) { validateJWT(c, userController.Show) })
 		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now(), passwordHash, getNewToken) })

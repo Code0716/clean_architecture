@@ -20,3 +20,7 @@ func (interactor *UserInteractor) UserById(identifier string) (user domain.User,
 	user, err = interactor.UserRepository.FindById(identifier)
 	return
 }
+func (interactor *UserInteractor) UserByQuery(Query, param string) (user domain.User, err error) {
+	user, err = interactor.UserRepository.FindByQuery(Query, param)
+	return
+}
