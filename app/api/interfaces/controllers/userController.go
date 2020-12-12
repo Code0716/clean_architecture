@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/Code0716/clean_architecture/app/api/domain"
@@ -26,25 +27,40 @@ func (controller *UserController) Create(c Context, uuid string, createTime time
 
 	u := new(domain.User)
 	c.Bind(&u)
+	response := AuthResponse{}
+	response.Status = http.StatusInternalServerError
+	_, err := controller.Interactor.UserByQuery("Email", u.Email)
+	if err == nil {
+		response.ErrorMessage = "User already exist"
+		c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
 	u.ID = uuid
 	hashedPass, _ := hashFunc(u.Password)
 	u.Password = hashedPass
 	u.CreatedDate = createTime
-	err := controller.Interactor.Add(*u)
+	err = controller.Interactor.Add(*u)
 	if err != nil {
-		c.JSON(500, err.Error())
+		response.ErrorMessage = "Fatal error"
+		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
+
 	tokenString := getNewToken(u.ID, u.Name, u.Email)
-	response := make(map[string]string)
-	response["Authorization"] = tokenString
-	c.JSON(200, response)
+	response.Authorization = tokenString
+	response.ErrorMessage = ""
+	response.Status = http.StatusOK
+	c.JSON(http.StatusOK, response)
 }
 
 func (controller *UserController) Index(c Context) {
+	response := Response{}
+	response.Status = http.StatusInternalServerError
 	users, err := controller.Interactor.Users()
+
 	if err != nil {
-		c.JSON(500, err.Error())
+		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 	var userData []domain.UserResponse
@@ -55,17 +71,19 @@ func (controller *UserController) Index(c Context) {
 		user.Email = value.Email
 		userData = append(userData, *user)
 	}
-	response := make(map[string][]domain.UserResponse)
 
-	response["data"] = userData
-	c.JSON(200, response)
+	response.Data = &userData
+	response.Status = http.StatusOK
+	c.JSON(http.StatusOK, response)
 }
 
 func (controller *UserController) Show(c Context) {
+	response := Response{}
+	response.Status = http.StatusInternalServerError
 	id := c.Param("id")
 	user, err := controller.Interactor.UserById(id)
 	if err != nil {
-		c.JSON(500, err.Error())
+		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 	userResponse := new(domain.UserResponse)
@@ -74,31 +92,33 @@ func (controller *UserController) Show(c Context) {
 	userResponse.Name = user.Name
 	userResponse.Email = user.Email
 
-	response := make(map[string]domain.UserResponse)
-	response["data"] = *userResponse
-	c.JSON(200, response)
+	response.Data = &userResponse
+	response.Status = http.StatusOK
+	c.JSON(http.StatusOK, response)
 }
 
 func (controller *UserController) Login(c Context, passwordVerify func(hash, pw string) error, getNewToken func(string, string, string) string) {
+	response := AuthResponse{}
+	response.Status = http.StatusInternalServerError
 
 	u := new(domain.User)
 	c.Bind(&u)
-	response := make(map[string]string)
 
 	// 定数化する？
 	user, err := controller.Interactor.UserByQuery("Email", u.Email)
-	response["error"] = "Not match email or password"
+	response.ErrorMessage = "Not match email or password"
 	if err != nil {
-		c.JSON(500, response)
+		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 	err = passwordVerify(user.Password, u.Password)
 	if err != nil {
-		c.JSON(500, response)
+		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 	tokenString := getNewToken(user.ID, user.Name, user.Email)
-	response["Authorization"] = tokenString
-	response["error"] = ""
-	c.JSON(200, response)
+	response.Authorization = tokenString
+	response.ErrorMessage = ""
+	response.Status = http.StatusOK
+	c.JSON(http.StatusOK, response)
 }
