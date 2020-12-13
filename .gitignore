@@ -9,3 +9,4 @@ images/upload/*.png
 images/upload/*.gif
 images/upload/*.ico
 /.env
+vendor/*
