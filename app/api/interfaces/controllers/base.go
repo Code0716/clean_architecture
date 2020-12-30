@@ -2,32 +2,18 @@ package controllers
 
 import (
 	"net/http"
+
+	"github.com/Code0716/clean_architecture/app/api/domain"
 )
 
 type Base struct {
 }
 
-type Response struct {
-	Meta *Meta       `json:"meta"`
-	Data interface{} `json:"data"`
-}
-
-type AuthResponse struct {
-	Meta          *Meta  `json:"meta"`
-	Authorization string `json:"Authorization"`
-}
-
-// Meta struct : response data
-type Meta struct {
-	Status       int    `json:"status"`
-	ErrorMessage string `json:"error_message"`
-}
-
-func (b *Base) FormatResponse(status int, data ...interface{}) *Response {
-	response := new(Response)
+func (b *Base) FormatResponse(status int, data ...interface{}) *domain.Response {
+	response := new(domain.Response)
 	switch status {
 	case http.StatusOK:
-		meta := &Meta{
+		meta := &domain.Meta{
 			Status: http.StatusOK,
 		}
 		response.Meta = meta
@@ -43,7 +29,7 @@ func (b *Base) FormatResponse(status int, data ...interface{}) *Response {
 	case http.StatusConflict: //409
 		fallthrough
 	case http.StatusInternalServerError: //500
-		meta := &Meta{
+		meta := &domain.Meta{
 			Status: status,
 		}
 		response.Meta = meta
@@ -52,11 +38,11 @@ func (b *Base) FormatResponse(status int, data ...interface{}) *Response {
 	return response
 }
 
-func (b *Base) FormatAuthResponse(status int, token string) *AuthResponse {
-	response := new(AuthResponse)
+func (b *Base) FormatAuthResponse(status int, token string) *domain.AuthResponse {
+	response := new(domain.AuthResponse)
 	switch status {
 	case http.StatusOK:
-		meta := &Meta{
+		meta := &domain.Meta{
 			Status: http.StatusOK,
 		}
 		response.Meta = meta
@@ -72,7 +58,7 @@ func (b *Base) FormatAuthResponse(status int, token string) *AuthResponse {
 	case http.StatusConflict: //409
 		fallthrough
 	case http.StatusInternalServerError: //500
-		meta := &Meta{
+		meta := &domain.Meta{
 			Status: status,
 		}
 		response.Meta = meta
