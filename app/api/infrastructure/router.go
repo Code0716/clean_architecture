@@ -13,7 +13,7 @@ import (
 func Router() {
 	router := gin.Default()
 	listenPort := fmt.Sprintf(":%s", os.Getenv("APP_LISTEN_PORT"))
-	fmt.Println(listenPort)
+
 	// CORS 対応
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{fmt.Sprintf("http://localhost%s", listenPort)}
