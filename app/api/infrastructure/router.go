@@ -1,7 +1,9 @@
 package infrastructure
 
 import (
+	"fmt"
 	"github.com/Code0716/clean_architecture/app/api/interfaces/controllers"
+	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -10,10 +12,11 @@ import (
 
 func Router() {
 	router := gin.Default()
-
+	listenPort := fmt.Sprintf(":%s", os.Getenv("APP_LISTEN_PORT"))
+	fmt.Println(listenPort)
 	// CORS 対応
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:8000"}
+	config.AllowOrigins = []string{fmt.Sprintf("http://localhost%s", listenPort)}
 	router.Use(cors.New(config))
 
 	userController := controllers.NewUserController(ConnectMySQL())
@@ -39,5 +42,5 @@ func Router() {
 
 	//router.GET("/migrate", migrate.Migrate)
 
-	router.Run(":8000")
+	router.Run(listenPort)
 }
