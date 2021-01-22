@@ -28,7 +28,7 @@ func Router() {
 	{
 		// login
 		api.POST("/login", func(c *gin.Context) { userController.Login(c, passwordVerify, getNewToken) })
-
+		// users
 		api.GET("/users", func(c *gin.Context) { validateJWT(c, userController.Index) })
 		api.GET("/users/:id", func(c *gin.Context) { validateJWT(c, userController.Show) })
 		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now(), passwordHash, getNewToken) })
