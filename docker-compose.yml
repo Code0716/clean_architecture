@@ -40,12 +40,30 @@ services:
       APP_LISTEN_PORT: $APP_LISTEN_PORT
       SIGNINGKEY: $SIGNINGKEY
 
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      SERVICES: s3
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      DEFAULT_REGION: ${AWS_REGION}
+      DATA_DIR: /tmp/localstack/data
+      LAMBDA_DOCKER_NETWORK: host
+    volumes:
+      - $PWD/.local/localstack:/tmp/localstack
+    ports:
+      - '9000:9000'
+      - '4566-4578:4566-4578'
+    networks:
+      - localstack
+
 networks:
   default:
     external:
       name: bridge
   container-link:
     name: clean-architecture
+  localstack:
 
 volumes:
   mysql_data:

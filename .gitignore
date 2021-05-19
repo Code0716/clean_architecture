@@ -10,3 +10,4 @@ images/upload/*.gif
 images/upload/*.ico
 /.env
 vendor/*
+.local

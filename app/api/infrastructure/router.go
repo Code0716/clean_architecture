@@ -2,9 +2,10 @@ package infrastructure
 
 import (
 	"fmt"
-	"github.com/Code0716/clean_architecture/app/api/interfaces/controllers"
 	"os"
 	"time"
+
+	"github.com/Code0716/clean_architecture/app/api/interfaces/controllers"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,6 @@ func Router() {
 	{
 		// login
 		api.POST("/login", func(c *gin.Context) { userController.Login(c, passwordVerify, getNewToken) })
-
 		api.GET("/users", func(c *gin.Context) { validateJWT(c, userController.Index) })
 		api.GET("/users/:id", func(c *gin.Context) { validateJWT(c, userController.Show) })
 		api.POST("/users", func(c *gin.Context) { userController.Create(c, GetUuid(), time.Now(), passwordHash, getNewToken) })
