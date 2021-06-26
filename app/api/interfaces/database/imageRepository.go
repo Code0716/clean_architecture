@@ -1,8 +1,9 @@
 package database
 
 import (
-	"github.com/Code0716/clean_architecture/app/api/domain"
 	"time"
+
+	"github.com/Code0716/clean_architecture/app/api/domain"
 )
 
 // Upload

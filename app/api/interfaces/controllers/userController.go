@@ -110,6 +110,7 @@ func (controller *UserController) Login(c Context, passwordVerify func(hash, pw 
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
+
 	err = passwordVerify(user.Password, u.Password)
 	if err != nil {
 		response := controller.Base.FormatResponse(http.StatusInternalServerError)
